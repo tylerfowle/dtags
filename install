@@ -3,8 +3,17 @@
 # tagr install script
 ######################################
 
-ln -fs "$PWD/dtags" /usr/local/bin
-chmod 755 /usr/local/bin/dtags
 
+if [ -d "$PWD/dtags" ]
+then
+  ln -fs "$PWD/dtags" /usr/local/bin
+fi
+
+if ! [ -d "~/.dtags" ]
+then
+  ln -fs '~/.dtags/dtags' /usr/local/bin
+fi
+
+chmod 755 /usr/local/bin/dtags
 
 dtags init

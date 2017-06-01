@@ -1,0 +1,10 @@
+#!/bin/sh
+######################################
+# tagr install script
+######################################
+
+ln -fs "$PWD/dtags" /usr/local/bin
+chmod 755 /usr/local/bin/dtags
+
+
+dtags init

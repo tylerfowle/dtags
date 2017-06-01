@@ -1,0 +1,81 @@
+#!/bin/sh
+# dtags
+################################################
+VERSION=0.1.0
+
+whichMethod=$1
+tagName=$2
+IFS=$'\n'
+
+# vars
+index_tmp=~/.dtags/.dtags.tmp
+index_file=~/.dtags/.dtags
+index_file_dir=$(dirname $index_file)
+
+
+# setup functions
+########################################################################
+function init() {
+  # create directory
+  mkdir -p "$index_file_dir"
+
+  # create file
+  touch $index_file
+}
+
+
+# helper functions
+########################################################################
+function echo_lines() {
+  while read p; do
+    printf "$p\n"
+  done < "$index_file"
+}
+
+function dedupe() {
+  # sort $index_file | uniq > $index_tmp
+  # cp $index_tmp $index_file
+
+  awk '!a[$0]++' $index_file > $index_tmp
+  cp $index_tmp $index_file
+}
+
+
+# core functions
+########################################################################
+function search() {
+  cd $(echo_lines|fzf|sed "s/.*=//")
+}
+
+function add_tag() {
+  printf "$1=$PWD\n" >> $index_file
+  dedupe
+}
+
+function remove_tag() {
+  # find tag and pwd match and remove from index
+  line="$1=$PWD"
+  sed -i '' "\:$line:d" $index_file
+  # dedupe
+}
+
+function list_tags() {
+  # list only tags from index
+  grep "$PWD$" $index_file | sed "s/[=].*//"
+}
+
+
+
+
+# Determining Which Method To Call Based On Command Line Arguments
+########################################################################
+case $whichMethod in
+  init  ) init ;;
+  list  ) list_tags ;;
+  -l    ) list_tags ;;
+  add   ) add_tag "$2" ;;
+  -a    ) add_tag "$2" ;;
+  remove) remove_tag "$2" ;;
+  -r    ) remove_tag "$2" ;;
+  *     ) search ;;
+esac

@@ -4,14 +4,16 @@
 ######################################
 
 
-if [ -d "$PWD/dtags" ]
-then
-  ln -fs "$PWD/dtags" /usr/local/bin
-fi
 
-if ! [ -d "~/.dtags" ]
-then
+
+if [ -d "~/.dtags" ]; then
+  echo 'github install'
   ln -fs '~/.dtags/dtags' /usr/local/bin
+elif [ -f "$PWD/dtags" ]; then
+  echo 'manual install'
+  ln -fs "$PWD/dtags" /usr/local/bin
+else
+  echo 'error during installation, please check documentation'
 fi
 
 chmod 755 /usr/local/bin/dtags

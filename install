@@ -1,12 +1,9 @@
 #!/bin/sh
+
+# dtags install script
 ######################################
-# tagr install script
-######################################
-
-
-
-
-if [ -d "~/.dtags" ]; then
+echo 'starting installation'
+if [ -f "~/.dtags/dtags" ]; then
   echo 'github install'
   ln -fs '~/.dtags/dtags' /usr/local/bin
 elif [ -f "$PWD/dtags" ]; then

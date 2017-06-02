@@ -3,7 +3,6 @@ dtags
 
 Command Line Tool for Tagging Directories.
 
-![](https://raw.github.com/tylerfowle/i/master/dtags.gif)
 
 dtags allows you to:
 * add and remove directory tags

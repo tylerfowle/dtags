@@ -2,17 +2,24 @@
 
 # dtags install script
 ######################################
-echo 'starting installation'
+
+echo '==> starting installation'
+
 if [ -f ~/.dtags/dtags ]; then
-  echo 'github install'
+  echo '====> github install'
   ln -fs ~/.dtags/dtags /usr/local/bin
 elif [ -f "$PWD/dtags" ]; then
-  echo 'manual install'
+  echo '====> manual install'
   ln -fs "$PWD/dtags" /usr/local/bin
 else
-  echo 'error during installation, please check documentation'
+  echo '!!> error during installation, please check documentation'
+  exit 1
 fi
 
+echo "==> setting correct permissions for dtags executable"
 chmod 755 /usr/local/bin/dtags
 
+echo "==> initializing"
 dtags init
+
+echo "==> installation complete!"

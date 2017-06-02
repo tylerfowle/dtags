@@ -3,6 +3,8 @@ dtags
 
 Command Line Tool for Tagging Directories.
 
+![](https://raw.github.com/tylerfowle/i/master/dtags.gif)
+
 dtags allows you to:
 * add and remove directory tags
 * list all tags on current directory
@@ -66,3 +68,10 @@ Usage
 | `remove` | `-r` | remove tag, takes argument     |
 | `list`   | `-l` | list tags on current directory |
 
+
+Examples
+--------
+
+### adding and removing tags
+
+![](https://raw.github.com/tylerfowle/i/master/dtags-addremove.gif)

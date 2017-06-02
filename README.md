@@ -14,6 +14,7 @@ Prerequisites
 
 dtags uses `fzf` for searching through an index of tagged directories.
 
+install fzf here:
 [junegunn/fzf](https://github.com/junegunn/fzf)
 
 
@@ -60,7 +61,7 @@ Usage
 
 | command  | flag | description                    |
 |----------|------|--------------------------------|
-| `search` | null | `fzf` index of tags and paths  |
+| `search` | null | default behavior. invoked by `. dtags`. uses `fzf` to search index of tags and paths  |
 | `add`    | `-a` | add tag, takes argument        |
 | `remove` | `-r` | remove tag, takes argument     |
 | `list`   | `-l` | list tags on current directory |

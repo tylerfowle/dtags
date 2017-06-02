@@ -5,7 +5,7 @@
 echo 'starting installation'
 if [ -f ~/.dtags/dtags ]; then
   echo 'github install'
-  ln -fs '~/.dtags/dtags' /usr/local/bin
+  ln -fs ~/.dtags/dtags /usr/local/bin
 elif [ -f "$PWD/dtags" ]; then
   echo 'manual install'
   ln -fs "$PWD/dtags" /usr/local/bin

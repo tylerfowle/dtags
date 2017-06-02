@@ -3,7 +3,7 @@
 # dtags install script
 ######################################
 echo 'starting installation'
-if [ -f "~/.dtags/dtags" ]; then
+if [ -f ~/.dtags/dtags ]; then
   echo 'github install'
   ln -fs '~/.dtags/dtags' /usr/local/bin
 elif [ -f "$PWD/dtags" ]; then

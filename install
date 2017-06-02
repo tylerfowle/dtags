@@ -6,10 +6,10 @@
 echo '==> starting installation'
 
 if [ -f ~/.dtags/dtags ]; then
-  echo '====> github install'
+  echo '==> github install detected!'
   ln -fs ~/.dtags/dtags /usr/local/bin
 elif [ -f "$PWD/dtags" ]; then
-  echo '====> manual install'
+  echo '==> manual install detected!'
   ln -fs "$PWD/dtags" /usr/local/bin
 else
   echo '!!> error during installation, please check documentation'

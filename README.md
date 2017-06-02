@@ -1,7 +1,7 @@
 dtags
 -----
 
-Command Line Tool for Tagging Directories.
+Command Line Tool for Tagging and Navigating Directories.
 
 ![](https://raw.github.com/tylerfowle/i/master/dtags.gif)
 

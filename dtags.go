@@ -12,10 +12,14 @@ import (
 )
 
 type database struct {
-	bucket []byte
-	dbDir  string
-	dbFile string
-	db     string
+	bucket     []byte
+	dbDir      string
+	dbFile     string
+	db         string
+	currentDir string
+	key        []byte
+	value      []byte
+	args       []string
 }
 
 func main() {
@@ -26,14 +30,11 @@ func main() {
 		log.Fatal(err)
 	}
 
-	info := database{}
-	info.bucket = []byte("dtags")
-	info.dbDir = usr.HomeDir + "/.dtags/go/"
-	info.dbFile = "dt.db"
-	info.db = info.dbDir + info.dbFile
-
-	// make the path to the db file
-	os.MkdirAll(info.dbDir, os.ModePerm)
+	// current working directory
+	currentDir, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// ##################################################
 	// Command Line
@@ -48,35 +49,43 @@ func main() {
 
 	cmdline.Parse(os.Args)
 
+	info := database{}
+	info.bucket = []byte("dtags")
+	info.dbDir = usr.HomeDir + "/.dtags/go/"
+	info.dbFile = "dt.db"
+	info.db = info.dbDir + info.dbFile
+
+	info.currentDir = currentDir
+
+	info.args = []string(cmdline.CommandArgumentsValues())
+	info.value = []byte(info.currentDir)
+	if len(info.args) > 0 {
+		info.key = []byte(info.args[0])
+	}
+
+	// make the path to the db file if it doesnt exist
+	os.MkdirAll(info.dbDir, os.ModePerm)
+
 	switch cmdline.CommandName() {
 	case "add":
-		addKeyToDatabase(cmdline.CommandArgumentsValues(), info)
+		addKeyToDatabase(info)
 	case "del":
-		deleteKeyFromDatabase(cmdline.CommandArgumentsValues(), info)
+		deleteKeyFromDatabase(info)
 	case "get":
-		getPathFromTag(cmdline.CommandArgumentsValues(), info)
+		getPathFromTag(info)
 	case "list":
-		listAllKeysInDatabase(cmdline.CommandArgumentsValues(), info)
+		listAllKeysInDatabase(info)
 	case "shell":
-		shell(cmdline.CommandArgumentsValues(), info)
+		shell(info)
 	default:
 		//  TODO:  <03-03-18, yourname> // default command should search tags and open shell
-		shell(cmdline.CommandArgumentsValues(), info)
+		shell(info)
 	}
 
 }
 
-func addKeyToDatabase(args []string, info database) {
-	fmt.Printf("adding tag %v to database\n", args)
-
-	// tag
-	key := []byte(args[0])
-	// current working directory
-	currentDir, err := os.Getwd()
-	if err != nil {
-		log.Fatal(err)
-	}
-	value := []byte(currentDir)
+func addKeyToDatabase(info database) {
+	fmt.Printf("adding tag %v to database\n", info.args)
 
 	// Open the my.db data file in your current directory.
 	// It will be created if it doesn't exist.
@@ -93,7 +102,7 @@ func addKeyToDatabase(args []string, info database) {
 			return err
 		}
 
-		err = bucket.Put(key, value)
+		err = bucket.Put(info.key, info.value)
 		if err != nil {
 			return err
 		}
@@ -105,8 +114,8 @@ func addKeyToDatabase(args []string, info database) {
 	}
 }
 
-func deleteKeyFromDatabase(args []string, info database) {
-	fmt.Printf("running command \"del\" with arguments %v\n", args)
+func deleteKeyFromDatabase(info database) {
+	fmt.Printf("running command \"del\" with arguments %v\n", info.args)
 
 	db, err := bolt.Open(info.db, 0666, nil)
 	if err != nil {
@@ -114,23 +123,17 @@ func deleteKeyFromDatabase(args []string, info database) {
 	}
 	defer db.Close()
 
-	// tag
-	key := []byte(args[0])
-
 	// Delete the key in a different write transaction.
 	if err := db.Update(func(tx *bolt.Tx) error {
-		return tx.Bucket([]byte(info.bucket)).Delete([]byte(key))
+		return tx.Bucket([]byte(info.bucket)).Delete([]byte(info.key))
 	}); err != nil {
 		log.Fatal(err)
 	}
 
 }
 
-func getPathFromTag(args []string, info database) string {
-	fmt.Printf("getting %v from database\n", args)
-
-	// tag
-	key := []byte(args[0])
+func getPathFromTag(info database) string {
+	fmt.Printf("getting %v from database\n", info.args)
 
 	// Open the my.db data file in your current directory.
 	// It will be created if it doesn't exist.
@@ -148,7 +151,7 @@ func getPathFromTag(args []string, info database) string {
 			return fmt.Errorf("bucket %q not found! ", info.bucket)
 		}
 
-		val = bucket.Get(key)
+		val = bucket.Get(info.key)
 		fmt.Println(string(val))
 
 		return nil
@@ -161,7 +164,7 @@ func getPathFromTag(args []string, info database) string {
 	return string(val)
 }
 
-func listAllKeysInDatabase(args []string, info database) {
+func listAllKeysInDatabase(info database) {
 	fmt.Printf("listing all keys in database\n")
 
 	// Open the my.db data file in your current directory.
@@ -190,7 +193,7 @@ func listAllKeysInDatabase(args []string, info database) {
 
 }
 
-func shell(args []string, info database) {
+func shell(info database) {
 
 	// Get the current user.
 	me, err := user.Current()
@@ -198,13 +201,8 @@ func shell(args []string, info database) {
 		log.Fatal(err)
 	}
 
-	// Get the current working directory.
-	cwd, err := os.Getwd()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	cwd = getPathFromTag(args, info)
+	// setup the path to launch the shell at
+	cwd := getPathFromTag(info)
 
 	// Set an environment variable.
 	os.Setenv("SOME_VAR", "1")

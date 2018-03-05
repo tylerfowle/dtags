@@ -27,3 +27,10 @@ add fuzzy searching when called with no arguments
 add install script
 add uninstall script
 add ability to manually enter path when adding tag
+
+bash helper:
+- make dtags path easy to change
+
+rework go:
+- move database open/close to on function
+- cleanup functions

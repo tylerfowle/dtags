@@ -5,9 +5,9 @@ import (
 	"log"
 	"os"
 	"os/user"
+	"strconv"
 
 	"github.com/boltdb/bolt"
-	cmdline "github.com/galdor/go-cmdline"
 	"github.com/ryanuber/columnize"
 )
 
@@ -17,6 +17,7 @@ type database struct {
 	dbFile     string
 	db         string
 	currentDir string
+	subcommand string
 	key        []byte
 	value      []byte
 	args       []string
@@ -39,46 +40,49 @@ func main() {
 	// ##################################################
 	// Command Line
 	// ##################################################
-	cmdline := cmdline.New()
 
-	cmdline.AddCommand("add", "add tag")
-	cmdline.AddCommand("del", "delete tag")
-	cmdline.AddCommand("get", "get tag")
-	cmdline.AddCommand("list", "list all tags")
-	cmdline.AddCommand("shell", "list all tags")
-
-	cmdline.Parse(os.Args)
-
+	// setup db vars
 	info := database{}
 	info.bucket = []byte("dtags")
 	info.dbDir = usr.HomeDir + "/.dtags/go/"
 	info.dbFile = "dt.db"
 	info.db = info.dbDir + info.dbFile
 
+	// current directory
 	info.currentDir = currentDir
-
-	info.args = []string(cmdline.CommandArgumentsValues())
 	info.value = []byte(info.currentDir)
-	if len(info.args) > 0 {
-		info.key = []byte(info.args[0])
+
+	if len(os.Args[0:]) < 1 {
+		fmt.Printf("no options")
+		os.Exit(1)
 	}
+
+	// arguments
+	info.subcommand = string(os.Args[1])
+	info.args = []string(os.Args[2:])
 
 	// make the path to the db file if it doesnt exist
 	os.MkdirAll(info.dbDir, os.ModePerm)
 
-	switch cmdline.CommandName() {
+	switch info.subcommand {
 	case "add":
+		info.key = []byte(info.args[0])
 		addKeyToDatabase(info)
 	case "del":
+		info.key = []byte(info.args[0])
 		deleteKeyFromDatabase(info)
 	case "get":
+		info.key = []byte(info.args[0])
 		getPathFromTag(info)
 	case "list":
 		listAllKeysInDatabase(info)
 	case "shell":
+		info.key = []byte(info.args[0])
 		shell(info)
 	default:
 		//  TODO:  <03-03-18, yourname> // default command should search tags and open shell
+		info.key = []byte(info.subcommand)
+		info.args = []string(os.Args[1:])
 		shell(info)
 	}
 
@@ -115,7 +119,7 @@ func addKeyToDatabase(info database) {
 }
 
 func deleteKeyFromDatabase(info database) {
-	fmt.Printf("running command \"del\" with arguments %v\n", info.args)
+	// fmt.Printf("deleting tag %v\n", info.args)
 
 	db, err := bolt.Open(info.db, 0666, nil)
 	if err != nil {
@@ -132,11 +136,17 @@ func deleteKeyFromDatabase(info database) {
 
 }
 
-func getPathFromTag(info database) string {
-	fmt.Printf("getting %v from database\n", info.args)
+func getTagfromPath(info database) {
 
-	// Open the my.db data file in your current directory.
-	// It will be created if it doesn't exist.
+	// return keys on current dir
+	db, err := bolt.Open(info.db, 0600, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+}
+
+func getPathFromTag(info database) string {
 	db, err := bolt.Open(info.db, 0600, nil)
 	if err != nil {
 		log.Fatal(err)
@@ -152,8 +162,10 @@ func getPathFromTag(info database) string {
 		}
 
 		val = bucket.Get(info.key)
-		fmt.Println(string(val))
-
+		if val == nil {
+			fmt.Printf("no tag %v found\n", info.args)
+			os.Exit(0)
+		}
 		return nil
 	})
 
@@ -165,10 +177,7 @@ func getPathFromTag(info database) string {
 }
 
 func listAllKeysInDatabase(info database) {
-	fmt.Printf("listing all keys in database\n")
 
-	// Open the my.db data file in your current directory.
-	// It will be created if it doesn't exist.
 	db, err := bolt.Open(info.db, 0600, nil)
 	if err != nil {
 		log.Fatal(err)
@@ -185,6 +194,7 @@ func listAllKeysInDatabase(info database) {
 		}
 
 		formattedList := columnize.SimpleFormat(unformattedList)
+		// print out the column formatted list
 		fmt.Println(formattedList)
 
 		return nil
@@ -195,40 +205,17 @@ func listAllKeysInDatabase(info database) {
 
 func shell(info database) {
 
-	// Get the current user.
-	me, err := user.Current()
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	// setup the path to launch the shell at
 	cwd := getPathFromTag(info)
+	if cwd == "" {
+		// exit if path is nil
+		fmt.Printf("tag not found")
+		os.Exit(1)
+	}
 
 	// Set an environment variable.
-	os.Setenv("SOME_VAR", "1")
+	os.Setenv("DTAGSPID", strconv.Itoa(os.Getpid()))
 
-	// Transfer stdin, stdout, and stderr to the new process
-	// and also set target directory for the shell to start in.
-	pa := os.ProcAttr{
-		Files: []*os.File{os.Stdin, os.Stdout, os.Stderr},
-		Dir:   cwd,
-	}
-
-	// Start up a new shell.
-	// Note that we supply "login" twice.
-	// -fpl means "don't prompt for PW and pass through environment."
-	fmt.Print(">> Starting a new interactive shell")
-	proc, err := os.StartProcess("/usr/bin/login", []string{"login", "-fpl", me.Username}, &pa)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Wait until user exits the shell
-	state, err := proc.Wait()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Keep on keepin' on.
-	fmt.Printf("<< Exited shell: %s\n", state.String())
+	fmt.Fprint(os.Stdout, cwd)
+	os.Exit(1)
 }

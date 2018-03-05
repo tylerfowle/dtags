@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+dtags=~/go/src/github.com/tylerfowle/dtags/dtags
+
+if [ $# -gt 1 ]; then
+  $dtags $@
+else
+  if [ "$1" = "list" ]; then
+    $dtags $1
+  else
+    if [ -d "`$dtags $1`" ]; then
+      cd "`$dtags $1`"
+    else
+      echo "no directory found for tag [$1]"
+      false 1
+    fi
+  fi
+fi

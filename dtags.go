@@ -71,11 +71,10 @@ func main() {
 	case "del":
 		info.key = []byte(info.args[0])
 		deleteKeyFromDatabase(info)
-	case "get":
-		info.key = []byte(info.args[0])
-		getPathFromTag(info)
+	case "tags":
+		listTags(info)
 	case "list":
-		listAllKeysInDatabase(info)
+		list(info)
 	case "shell":
 		info.key = []byte(info.args[0])
 		shell(info)
@@ -136,7 +135,7 @@ func deleteKeyFromDatabase(info database) {
 
 }
 
-func getTagfromPath(info database) {
+func listTags(info database) {
 
 	// return keys on current dir
 	db, err := bolt.Open(info.db, 0600, nil)
@@ -144,6 +143,26 @@ func getTagfromPath(info database) {
 		log.Fatal(err)
 	}
 	defer db.Close()
+
+	err = db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte(info.bucket))
+		c := b.Cursor()
+
+		var tags []string
+		for k, v := c.First(); k != nil; k, v = c.Next() {
+			if string(v) == info.currentDir {
+				tags = append(tags, fmt.Sprintf("%s", k))
+			}
+		}
+
+		if len(tags) > 0 {
+			fmt.Println(tags)
+		}
+
+		return nil
+
+	})
+
 }
 
 func getPathFromTag(info database) string {
@@ -164,7 +183,7 @@ func getPathFromTag(info database) string {
 		val = bucket.Get(info.key)
 		if val == nil {
 			fmt.Printf("no tag %v found\n", info.args)
-			os.Exit(0)
+			os.Exit(1)
 		}
 		return nil
 	})
@@ -176,7 +195,7 @@ func getPathFromTag(info database) string {
 	return string(val)
 }
 
-func listAllKeysInDatabase(info database) {
+func list(info database) {
 
 	db, err := bolt.Open(info.db, 0600, nil)
 	if err != nil {

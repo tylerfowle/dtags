@@ -7,23 +7,23 @@ alias dt=". ~/go/src/github.com/tylerfowle/dtags/dt"
 ```
 
 
-install script
-uninstall script
+## commands
 
-- add ability to manually enter path when adding tag
+`add` : add tag to current directory
+`del` : delete tag and associated path from database
+`` : returns a path from a tag
+`tags` : lists all tags associated with current directory
 
-- add tag to current dir
-
-- list tags on current dir
-
-- get path from tag
-
-- delete tag from database
-- remove all tags from current dir
-
-- list all tags
+`list`: prints all tags and their associated directories
 
 
-- default actions
-- no arguments: open a fuzzy finder to search throught all tags
-- 1 argument that doesnt match any subcommands - search for key in database
+
+
+
+#### issues:
+case sensitive tags?
+change all commands to be flags?
+add fuzzy searching when called with no arguments
+add install script
+add uninstall script
+add ability to manually enter path when adding tag

@@ -71,10 +71,10 @@ func main() {
 	case "del":
 		info.key = []byte(info.args[0])
 		deleteKeyFromDatabase(info)
-	case "tags":
-		listTags(info)
 	case "list":
-		list(info)
+		listTags(info)
+	case "all", "more":
+		listAll(info)
 	case "shell":
 		info.key = []byte(info.args[0])
 		shell(info)
@@ -195,7 +195,7 @@ func getPathFromTag(info database) string {
 	return string(val)
 }
 
-func list(info database) {
+func listAll(info database) {
 
 	db, err := bolt.Open(info.db, 0600, nil)
 	if err != nil {

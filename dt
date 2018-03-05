@@ -3,6 +3,7 @@ dtags=~/go/src/github.com/tylerfowle/dtags/dtags
 declare -a arr=("list" "all" "more")
 
 # check if single arg command
+found=0
 for i in "${arr[@]}"
 do
   if [ $i = $1 ]; then

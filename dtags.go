@@ -8,7 +8,6 @@ import (
 	"strconv"
 
 	"github.com/boltdb/bolt"
-	"github.com/fatih/color"
 	"github.com/ryanuber/columnize"
 )
 
@@ -83,8 +82,9 @@ func main() {
 	case "shell":
 		info.key = []byte(info.args[0])
 		shell(info)
+	case "completion":
+		tagCompletion(info)
 	default:
-		//  TODO:  <03-03-18, yourname> // default command should search tags and open shell
 		info.key = []byte(info.subcommand)
 		info.args = []string(os.Args[1:])
 		shell(info)
@@ -111,7 +111,6 @@ func addKeyToDatabase(info database) {
 
 		err = bucket.Put(info.key, info.value)
 		if err == nil {
-			color.Green("success")
 			fmt.Printf("added tag [%v] with path [%v] to database\n", string(info.key), string(info.value))
 		} else {
 			return err
@@ -138,8 +137,7 @@ func deleteKeyFromDatabase(info database) {
 	}); err != nil {
 		log.Fatal(err)
 	} else {
-		color.Green("success")
-		fmt.Printf("deleting tag %v\n", info.args)
+		fmt.Printf("tag [%v] deleted\n", string(info.key))
 	}
 
 }
@@ -219,6 +217,33 @@ func listAll(info database) {
 		var unformattedList []string
 		for k, v := c.First(); k != nil; k, v = c.Next() {
 			unformattedList = append(unformattedList, fmt.Sprintf("%s|%s\n", k, v))
+		}
+
+		formattedList := columnize.SimpleFormat(unformattedList)
+		// print out the column formatted list
+		fmt.Println(formattedList)
+
+		return nil
+
+	})
+
+}
+
+func tagCompletion(info database) {
+
+	db, err := bolt.Open(info.db, 0600, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	err = db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte(info.bucket))
+		c := b.Cursor()
+
+		var unformattedList []string
+		for k, _ := c.First(); k != nil; k, _ = c.Next() {
+			unformattedList = append(unformattedList, fmt.Sprintf("%s\n", k))
 		}
 
 		formattedList := columnize.SimpleFormat(unformattedList)

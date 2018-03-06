@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 dtags=~/go/src/github.com/tylerfowle/dtags/dtags
-declare -a arr=("list" "all" "more")
+declare -a arr=("list" "all" "more" "completion")
 found=0
 
 # check if more than one arg

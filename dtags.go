@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/boltdb/bolt"
+	"github.com/fatih/color"
 	"github.com/ryanuber/columnize"
 )
 
@@ -67,6 +68,10 @@ func main() {
 	switch info.subcommand {
 	case "add":
 		info.key = []byte(info.args[0])
+		if info.key == nil {
+			fmt.Printf("not enough arguments")
+			os.Exit(1)
+		}
 		addKeyToDatabase(info)
 	case "del":
 		info.key = []byte(info.args[0])
@@ -88,7 +93,6 @@ func main() {
 }
 
 func addKeyToDatabase(info database) {
-	fmt.Printf("adding tag %v to database\n", info.args)
 
 	// Open the my.db data file in your current directory.
 	// It will be created if it doesn't exist.
@@ -106,7 +110,10 @@ func addKeyToDatabase(info database) {
 		}
 
 		err = bucket.Put(info.key, info.value)
-		if err != nil {
+		if err == nil {
+			color.Green("success")
+			fmt.Printf("added tag [%v] with path [%v] to database\n", string(info.key), string(info.value))
+		} else {
 			return err
 		}
 		return nil
@@ -118,7 +125,6 @@ func addKeyToDatabase(info database) {
 }
 
 func deleteKeyFromDatabase(info database) {
-	// fmt.Printf("deleting tag %v\n", info.args)
 
 	db, err := bolt.Open(info.db, 0666, nil)
 	if err != nil {
@@ -131,6 +137,9 @@ func deleteKeyFromDatabase(info database) {
 		return tx.Bucket([]byte(info.bucket)).Delete([]byte(info.key))
 	}); err != nil {
 		log.Fatal(err)
+	} else {
+		color.Green("success")
+		fmt.Printf("deleting tag %v\n", info.args)
 	}
 
 }

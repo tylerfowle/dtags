@@ -1,22 +1,25 @@
 #!/usr/bin/env bash
 dtags=~/go/src/github.com/tylerfowle/dtags/dtags
 declare -a arr=("list" "all" "more")
-
-# check if single arg command
 found=0
-for i in "${arr[@]}"
-do
-  if [ $i = $1 ]; then
-    found=1
-  fi
-done
 
 # check if more than one arg
 if [ $# -gt 1 ]; then
   $dtags $@
+elif [ $# -eq 0  ]; then
+  $dtags more
 else
+  # check if arg is a single arg command
+  for i in "${arr[@]}"
+  do
+    if [ $i = $1 ]; then
+      found=1
+    fi
+  done
+  # if found, then run command
   if [ $found = 1 ]; then
     $dtags $1
+  # else cd to tag
   else
     if [ -d "`$dtags $1`" ]; then
       cd "`$dtags $1`"

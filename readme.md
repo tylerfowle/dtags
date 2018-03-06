@@ -9,20 +9,23 @@ alias dt=". ~/go/src/github.com/tylerfowle/dtags/dt"
 
 ## commands
 
-`add` : add tag to current directory
-`del` : delete tag and associated path from database
-`` : returns a path from a tag
-`tags` : lists all tags associated with current directory
+`add` : add tag to current _working_ directory
+`del` : delete tag and associated path from database, dtags doesnt care were this command is ran from
+`list` : lists all tags associated with current directory, is backwards compatible with bash version
+`[string]` : returns a path from a tag, `cd`s you to the directory when called from bash helper script/alias
 
-`list`: prints all tags and their associated directories
-
-
+``,`all`,`more`: prints all tags and their associated directories
 
 
 
-#### issues:
+
+
+#### issues/todos:
 case sensitive tags?
+prompt for overwrite of tag?
 change all commands to be flags?
+bash/zsh completion?
+
 add fuzzy searching when called with no arguments
 add install script
 add uninstall script

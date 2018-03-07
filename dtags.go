@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 	"os/user"
-	"strconv"
 
 	"github.com/boltdb/bolt"
 	"github.com/ryanuber/columnize"
@@ -23,34 +22,63 @@ type database struct {
 	args       []string
 }
 
-func main() {
+var (
+	db   *bolt.DB
+	err  error
+	info = database{}
+)
 
-	// user info
+func init() {
+	// setup db vars
+	info.bucket = []byte("dtags")
+	info.dbDir = getUser().HomeDir + "/.dtags/go/"
+	info.dbFile = "dt.db"
+	info.db = info.dbDir + info.dbFile
+
+	// setup current directory and value
+	info.currentDir = getCurrentDir()
+	info.value = []byte(info.currentDir)
+
+	// Open the my.db data file in your current directory.
+	// It will be created if it doesn't exist.
+	db, err = bolt.Open(info.db, 0600, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+}
+
+// ##################################################
+// get user info
+// ##################################################
+func getUser() *user.User {
 	usr, err := user.Current()
 	if err != nil {
 		log.Fatal(err)
 	}
+	return usr
+}
 
-	// current working directory
+// ##################################################
+// get current working directory
+// ##################################################
+func getCurrentDir() string {
 	currentDir, err := os.Getwd()
 	if err != nil {
 		log.Fatal(err)
 	}
+	return currentDir
+}
 
-	// ##################################################
-	// Command Line
-	// ##################################################
+// ##################################################
+// main
+// handle command line args
+// call appropriate functions
+// ##################################################
+func main() {
 
-	// setup db vars
-	info := database{}
-	info.bucket = []byte("dtags")
-	info.dbDir = usr.HomeDir + "/.dtags/go/"
-	info.dbFile = "dt.db"
-	info.db = info.dbDir + info.dbFile
-
-	// current directory
-	info.currentDir = currentDir
-	info.value = []byte(info.currentDir)
+	// defer closing the database
+	defer db.Close()
 
 	if len(os.Args[0:]) < 1 {
 		fmt.Printf("no options")
@@ -94,15 +122,6 @@ func main() {
 
 func addKeyToDatabase(info database) {
 
-	// Open the my.db data file in your current directory.
-	// It will be created if it doesn't exist.
-	db, err := bolt.Open(info.db, 0600, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
-
-	// store some data
 	err = db.Update(func(tx *bolt.Tx) error {
 		bucket, err := tx.CreateBucketIfNotExists(info.bucket)
 		if err != nil {
@@ -125,13 +144,6 @@ func addKeyToDatabase(info database) {
 
 func deleteKeyFromDatabase(info database) {
 
-	db, err := bolt.Open(info.db, 0666, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
-
-	// Delete the key in a different write transaction.
 	if err := db.Update(func(tx *bolt.Tx) error {
 		return tx.Bucket([]byte(info.bucket)).Delete([]byte(info.key))
 	}); err != nil {
@@ -143,13 +155,6 @@ func deleteKeyFromDatabase(info database) {
 }
 
 func listTags(info database) {
-
-	// return keys on current dir
-	db, err := bolt.Open(info.db, 0600, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
 
 	err = db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(info.bucket))
@@ -173,11 +178,6 @@ func listTags(info database) {
 }
 
 func getPathFromTag(info database) string {
-	db, err := bolt.Open(info.db, 0600, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
 
 	var val []byte
 	// retrieve the data
@@ -204,12 +204,6 @@ func getPathFromTag(info database) string {
 
 func listAll(info database) {
 
-	db, err := bolt.Open(info.db, 0600, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
-
 	err = db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(info.bucket))
 		c := b.Cursor()
@@ -230,12 +224,6 @@ func listAll(info database) {
 }
 
 func tagCompletion(info database) {
-
-	db, err := bolt.Open(info.db, 0600, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
 
 	err = db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(info.bucket))
@@ -267,7 +255,7 @@ func shell(info database) {
 	}
 
 	// Set an environment variable.
-	os.Setenv("DTAGSPID", strconv.Itoa(os.Getpid()))
+	// os.Setenv("DTAGSPID", strconv.Itoa(os.Getpid()))
 
 	fmt.Fprint(os.Stdout, cwd)
 	os.Exit(1)

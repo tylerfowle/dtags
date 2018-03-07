@@ -24,7 +24,7 @@ alias dt=". ~/go/src/github.com/tylerfowle/dtags/dt"
 - [ ] change all commands to be flags?
 - [ ] bash completion
 - [x] zsh completion
-
+- [ ] legacy database conversion?
 - [ ] add fuzzy searching when called with no arguments
 - [ ] add install script
 - [ ] add uninstall script

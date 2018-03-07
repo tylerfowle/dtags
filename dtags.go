@@ -69,12 +69,6 @@ func main() {
 	// defer closing the database
 	defer db.Close()
 
-	// check if no args are given
-	if len(os.Args[0:]) == 1 {
-		listAll(info)
-		os.Exit(0)
-	}
-
 	// arguments
 	info.subcommand = string(os.Args[1])
 	info.args = []string(os.Args[2:])

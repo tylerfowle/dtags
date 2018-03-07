@@ -48,9 +48,6 @@ func init() {
 
 }
 
-// ##################################################
-// get user info
-// ##################################################
 func getUser() *user.User {
 	usr, err := user.Current()
 	if err != nil {
@@ -59,9 +56,6 @@ func getUser() *user.User {
 	return usr
 }
 
-// ##################################################
-// get current working directory
-// ##################################################
 func getCurrentDir() string {
 	currentDir, err := os.Getwd()
 	if err != nil {
@@ -70,19 +64,15 @@ func getCurrentDir() string {
 	return currentDir
 }
 
-// ##################################################
-// main
-// handle command line args
-// call appropriate functions
-// ##################################################
 func main() {
 
 	// defer closing the database
 	defer db.Close()
 
-	if len(os.Args[0:]) < 1 {
-		fmt.Printf("no options")
-		os.Exit(1)
+	// check if no args are given
+	if len(os.Args[0:]) == 1 {
+		listAll(info)
+		os.Exit(0)
 	}
 
 	// arguments
@@ -107,9 +97,6 @@ func main() {
 		listTags(info)
 	case "all", "more":
 		listAll(info)
-	case "shell":
-		info.key = []byte(info.args[0])
-		shell(info)
 	case "completion":
 		tagCompletion(info)
 	default:

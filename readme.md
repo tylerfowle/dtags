@@ -1,8 +1,8 @@
 # :bookmark: dtags
+#### directory tagging and navigation utility.
 
-directory tagging and navigation utility.
-
-Dtags allows tagging, and change directories fast and easy.
+Dtags makes tagging, and change directories fast and easy. Add arbitrary tags
+to any directory, making it easy to jump back to those directories easy.
 
 ## Installation
 
@@ -12,8 +12,7 @@ Installation consists of 3 parts.
 3. the guts, a go utility that does all the heavy lifting.
 
 - [go install](#go-install)
-- [github install](#github-install)
-- [direct download](#direct-download-install)
+- [github/direct download install](#github-install)
 
 #### Alias:
 add the following bash alias to your bashrc/zshrc
@@ -27,12 +26,8 @@ go get tylerfowle/dtags
 ```
 
 #### Github Install:
-```
-git clone git@github.com:tylerfowle/dtags.git
-```
+clone or download this repo
 
-
-#### Direct Download Install:
 
 
 

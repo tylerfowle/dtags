@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/user"
+	"strings"
 
 	"github.com/boltdb/bolt"
 	"github.com/ryanuber/columnize"
@@ -78,18 +79,19 @@ func main() {
 
 	switch info.subcommand {
 	case "add":
-		info.key = []byte(info.args[0])
-		if info.key == nil {
-			fmt.Printf("not enough arguments")
-			os.Exit(1)
+		info.key = []byte(strings.ToLower(info.args[0]))
+
+		if len(info.args[0:]) > 1 {
+			info.value = []byte(info.args[1])
 		}
+
 		addKeyToDatabase(info)
 	case "del":
-		info.key = []byte(info.args[0])
+		info.key = []byte(strings.ToLower(info.args[0]))
 		deleteKeyFromDatabase(info)
 	case "list":
 		listTags(info)
-	case "all", "more":
+	case "ls":
 		listAll(info)
 	case "completion":
 		tagCompletion(info)
@@ -111,7 +113,7 @@ func addKeyToDatabase(info database) {
 
 		err = bucket.Put(info.key, info.value)
 		if err == nil {
-			fmt.Printf("added tag [%v] with path [%v] to database\n", string(info.key), string(info.value))
+			fmt.Printf("added tag [%v] with path [%v]\n", string(info.key), string(info.value))
 		} else {
 			return err
 		}
@@ -130,7 +132,7 @@ func deleteKeyFromDatabase(info database) {
 	}); err != nil {
 		log.Fatal(err)
 	} else {
-		fmt.Printf("tag [%v] deleted\n", string(info.key))
+		fmt.Printf("deleted tag [%v]\n", string(info.key))
 	}
 
 }

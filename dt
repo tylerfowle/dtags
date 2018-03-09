@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 dtags=~/go/src/github.com/tylerfowle/dtags/dtags
-declare -a arr=("list" "all" "more" "completion")
+declare -a arr=("list" "ls" "completion")
 found=0
 
 # check if more than one arg
 if [ $# -gt 1 ]; then
   $dtags $@
+# else list tags and paths
 elif [ $# -eq 0  ]; then
   $dtags more
 else
-  # check if arg is a single arg command
+  # check if arg is a single arg command in arr array
   for i in "${arr[@]}"
   do
     if [ $i = $1 ]; then

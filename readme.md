@@ -46,6 +46,7 @@ Command | Description
 - [x] make tags case insensitive
 - [ ] bash completion
 - [x] zsh completion
+- [ ] confirm overwrite?
 - [ ] add install script
 - [ ] add uninstall script
 - [ ] add ability to manually enter path when adding tag

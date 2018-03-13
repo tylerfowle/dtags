@@ -9,7 +9,6 @@ import (
 
 	"github.com/boltdb/bolt"
 	"github.com/ryanuber/columnize"
-	datab "github.com/tylerfowle/dtags/db"
 )
 
 type database struct {
@@ -106,6 +105,16 @@ func main() {
 
 //func addKeyToDatabase(info database) {
 //
+//	// if getPathFromTag(info) != "" {
+//	// fmt.Printf("Overwrite existing tag? [%s] (y/n)", info.key)
+//	// if confirmation() == false {
+//	// fmt.Println("action cancelled. no tag added")
+//	// os.Exit(0)
+//	// }
+//	// } else {
+//	// fmt.Printf("other")
+//	// }
+//
 //	err = db.Update(func(tx *bolt.Tx) error {
 //		bucket, err := tx.CreateBucketIfNotExists(info.bucket)
 //		if err != nil {
@@ -137,7 +146,7 @@ func main() {
 //	}
 //
 //}
-
+//
 //func listTags(info database) {
 //
 //	err = db.View(func(tx *bolt.Tx) error {
@@ -160,7 +169,7 @@ func main() {
 //	})
 //
 //}
-
+//
 //func getPathFromTag(info database) string {
 //
 //	var val []byte
@@ -185,7 +194,7 @@ func main() {
 //
 //	return string(val)
 //}
-
+//
 //func listAll(info database) {
 //
 //	err = db.View(func(tx *bolt.Tx) error {
@@ -206,7 +215,7 @@ func main() {
 //	})
 //
 //}
-
+//
 //func tagCompletion(info database) {
 //
 //	err = db.View(func(tx *bolt.Tx) error {
@@ -227,7 +236,7 @@ func main() {
 //	})
 //
 //}
-
+//
 //func shell(info database) {
 //
 //	// setup the path to launch the shell at
@@ -243,4 +252,41 @@ func main() {
 //
 //	fmt.Fprint(os.Stdout, cwd)
 //	os.Exit(1)
+//}
+//
+//func confirmation() bool {
+//	var response string
+//
+//	_, err := fmt.Scanln(&response)
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//	y := []string{"y", "Y", "yes", "Yes", "YES"}
+//	n := []string{"n", "N", "no", "No", "NO"}
+//
+//	response = strings.TrimSpace(response)
+//	response = strings.ToLower(response)
+//
+//	if containsString(y, response) {
+//		return true
+//	} else if containsString(n, response) {
+//		return false
+//	} else {
+//		fmt.Println("yes or no required:")
+//		return confirmation()
+//	}
+//}
+//
+//func posString(slice []string, element string) int {
+//	for index, elem := range slice {
+//		if elem == element {
+//			return index
+//		}
+//	}
+//	return -1
+//}
+//
+//// containsString returns true iff slice contains element
+//func containsString(slice []string, element string) bool {
+//	return !(posString(slice, element) == -1)
 //}

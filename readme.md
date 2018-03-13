@@ -46,8 +46,9 @@ Command | Description
 - [x] make tags case insensitive
 - [ ] bash completion
 - [x] zsh completion
+- [ ] confirm overwrite?
 - [ ] add install script
 - [ ] add uninstall script
-- [ ] add ability to manually enter path when adding tag
+- [x] add ability to manually enter path when adding tag
 - [ ] bash helper script - make dtags path easy to change
 - [ ] add ability to add and delete multiple tags at once

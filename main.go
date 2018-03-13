@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sort"
 	"strings"
 
+	"github.com/ryanuber/columnize"
 	"github.com/tylerfowle/dtags/db"
 )
 
@@ -33,6 +35,13 @@ func main() {
 		break
 	case "list":
 		printAllTags()
+		break
+	case "ls":
+		printBoth()
+		break
+	default:
+		args := os.Args[1:]
+		printTagPath(args)
 	}
 
 	//case "list":
@@ -73,6 +82,29 @@ func printAllTags() {
 	}
 }
 
+func printBoth() {
+	var unformattedlist []string
+	for tag, path := range database.All() {
+		unformattedlist = append(unformattedlist, fmt.Sprintf("%s|%s\n", tag, path))
+	}
+	sort.Strings(unformattedlist)
+	formattedList := columnize.SimpleFormat(unformattedlist)
+	fmt.Println(formattedList)
+}
+
+func printTagPath(args []string) {
+
+	cwd := database.GetValue(args[0])
+	if cwd == "" {
+		fmt.Printf("tag not found\n")
+		os.Exit(1)
+	}
+
+	fmt.Fprint(os.Stdout, cwd)
+	os.Exit(1)
+
+}
+
 //func tagCompletion(info database) {
 //
 //	err = db.View(func(tx *bolt.Tx) error {
@@ -93,24 +125,7 @@ func printAllTags() {
 //	})
 //
 //}
-//
-//func shell(info database) {
-//
-//	// setup the path to launch the shell at
-//	cwd := getPathFromTag(info)
-//	if cwd == "" {
-//		// exit if path is nil
-//		fmt.Printf("tag not found")
-//		os.Exit(1)
-//	}
-//
-//	// Set an environment variable.
-//	// os.Setenv("DTAGSPID", strconv.Itoa(os.Getpid()))
-//
-//	fmt.Fprint(os.Stdout, cwd)
-//	os.Exit(1)
-//}
-//
+
 func confirmation() bool {
 	var response string
 

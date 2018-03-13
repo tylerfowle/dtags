@@ -18,7 +18,7 @@ type Database struct {
 func Init() (d *Database, err error) {
 	u, err := user.Current()
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	d = &Database{}
@@ -27,14 +27,14 @@ func Init() (d *Database, err error) {
 	d.CurrentDirectory, _ = os.Getwd()
 
 	if err = os.MkdirAll(u.HomeDir+"/.dtags/go", 0755); err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	// Open the my.db data file in your current directory.
 	// It will be created if it doesn't exist.
 	d.Instance, err = bolt.Open(d.Datafile, 0600, &bolt.Options{Timeout: 1 * time.Second})
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	err = d.Instance.Update(func(tx *bolt.Tx) error {
@@ -78,7 +78,7 @@ func (d *Database) GetValue(k string) string {
 }
 
 func (d *Database) All() map[string]string {
-	var m map[string]string
+	m := make(map[string]string)
 	_ = d.Instance.View(func(tx *bolt.Tx) error {
 		c := tx.Bucket(d.Bucket).Cursor()
 

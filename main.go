@@ -9,10 +9,12 @@ import (
 	"github.com/tylerfowle/dtags/db"
 )
 
-var database db.Database
+var database *db.Database
 
 func main() {
-	database, err := db.Init()
+	var err error
+
+	database, err = db.Init()
 	if err != nil {
 		panic(err)
 	}
@@ -66,7 +68,7 @@ func addNewTag(args []string) {
 }
 
 func printAllTags() {
-	for tag := range database.GetTags() {
+	for _, tag := range database.GetTags() {
 		fmt.Println(tag)
 	}
 }

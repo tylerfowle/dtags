@@ -33,7 +33,7 @@ func main() {
 	case "del":
 		database.DeleteKey(strings.ToLower(args[0]))
 		break
-	case "list":
+	case "list", "completion":
 		printAllTags()
 		break
 	case "ls":
@@ -41,21 +41,8 @@ func main() {
 		break
 	default:
 		args := os.Args[1:]
-		printTagPath(args)
+		printPath(args)
 	}
-
-	//case "list":
-	//	listTags(info)
-	//case "ls":
-	//	listAll(info)
-	//case "completion":
-	//	tagCompletion(info)
-	//default:
-	//	info.key = []byte(info.subcommand)
-	//	info.args = []string(os.Args[1:])
-	//	shell(info)
-	//}
-
 }
 
 func addNewTag(args []string) {
@@ -92,7 +79,7 @@ func printBoth() {
 	fmt.Println(formattedList)
 }
 
-func printTagPath(args []string) {
+func printPath(args []string) {
 
 	cwd := database.GetValue(args[0])
 	if cwd == "" {
@@ -104,27 +91,6 @@ func printTagPath(args []string) {
 	os.Exit(1)
 
 }
-
-//func tagCompletion(info database) {
-//
-//	err = db.View(func(tx *bolt.Tx) error {
-//		b := tx.Bucket([]byte(info.bucket))
-//		c := b.Cursor()
-//
-//		var unformattedList []string
-//		for k, _ := c.First(); k != nil; k, _ = c.Next() {
-//			unformattedList = append(unformattedList, fmt.Sprintf("%s\n", k))
-//		}
-//
-//		formattedList := columnize.SimpleFormat(unformattedList)
-//		// print out the column formatted list
-//		fmt.Println(formattedList)
-//
-//		return nil
-//
-//	})
-//
-//}
 
 func confirmation() bool {
 	var response string
@@ -158,7 +124,6 @@ func posString(slice []string, element string) int {
 	return -1
 }
 
-//
 // containsString returns true iff slice contains element
 func containsString(slice []string, element string) bool {
 	return !(posString(slice, element) == -1)

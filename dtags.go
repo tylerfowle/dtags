@@ -9,6 +9,7 @@ import (
 
 	"github.com/boltdb/bolt"
 	"github.com/ryanuber/columnize"
+	datab "github.com/tylerfowle/dtags/db"
 )
 
 type database struct {
@@ -103,143 +104,143 @@ func main() {
 
 }
 
-func addKeyToDatabase(info database) {
+//func addKeyToDatabase(info database) {
+//
+//	err = db.Update(func(tx *bolt.Tx) error {
+//		bucket, err := tx.CreateBucketIfNotExists(info.bucket)
+//		if err != nil {
+//			return err
+//		}
+//
+//		err = bucket.Put(info.key, info.value)
+//		if err == nil {
+//			fmt.Printf("added tag [%v] with path [%v]\n", string(info.key), string(info.value))
+//		} else {
+//			return err
+//		}
+//		return nil
+//	})
+//
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//}
 
-	err = db.Update(func(tx *bolt.Tx) error {
-		bucket, err := tx.CreateBucketIfNotExists(info.bucket)
-		if err != nil {
-			return err
-		}
+//func deleteKeyFromDatabase(info database) {
+//
+//	if err := db.Update(func(tx *bolt.Tx) error {
+//		return tx.Bucket([]byte(info.bucket)).Delete([]byte(info.key))
+//	}); err != nil {
+//		log.Fatal(err)
+//	} else {
+//		fmt.Printf("deleted tag [%v]\n", string(info.key))
+//	}
+//
+//}
 
-		err = bucket.Put(info.key, info.value)
-		if err == nil {
-			fmt.Printf("added tag [%v] with path [%v]\n", string(info.key), string(info.value))
-		} else {
-			return err
-		}
-		return nil
-	})
+//func listTags(info database) {
+//
+//	err = db.View(func(tx *bolt.Tx) error {
+//		b := tx.Bucket([]byte(info.bucket))
+//		c := b.Cursor()
+//
+//		var tags []string
+//		for k, v := c.First(); k != nil; k, v = c.Next() {
+//			if string(v) == info.currentDir {
+//				tags = append(tags, fmt.Sprintf("%s", k))
+//			}
+//		}
+//
+//		if len(tags) > 0 {
+//			fmt.Println(tags)
+//		}
+//
+//		return nil
+//
+//	})
+//
+//}
 
-	if err != nil {
-		log.Fatal(err)
-	}
-}
+//func getPathFromTag(info database) string {
+//
+//	var val []byte
+//	// retrieve the data
+//	err = db.View(func(tx *bolt.Tx) error {
+//		bucket := tx.Bucket(info.bucket)
+//		if bucket == nil {
+//			return fmt.Errorf("bucket %q not found! ", info.bucket)
+//		}
+//
+//		val = bucket.Get(info.key)
+//		if val == nil {
+//			fmt.Printf("no tag %v found\n", info.args)
+//			os.Exit(1)
+//		}
+//		return nil
+//	})
+//
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//
+//	return string(val)
+//}
 
-func deleteKeyFromDatabase(info database) {
+//func listAll(info database) {
+//
+//	err = db.View(func(tx *bolt.Tx) error {
+//		b := tx.Bucket([]byte(info.bucket))
+//		c := b.Cursor()
+//
+//		var unformattedList []string
+//		for k, v := c.First(); k != nil; k, v = c.Next() {
+//			unformattedList = append(unformattedList, fmt.Sprintf("%s|%s\n", k, v))
+//		}
+//
+//		formattedList := columnize.SimpleFormat(unformattedList)
+//		// print out the column formatted list
+//		fmt.Println(formattedList)
+//
+//		return nil
+//
+//	})
+//
+//}
 
-	if err := db.Update(func(tx *bolt.Tx) error {
-		return tx.Bucket([]byte(info.bucket)).Delete([]byte(info.key))
-	}); err != nil {
-		log.Fatal(err)
-	} else {
-		fmt.Printf("deleted tag [%v]\n", string(info.key))
-	}
+//func tagCompletion(info database) {
+//
+//	err = db.View(func(tx *bolt.Tx) error {
+//		b := tx.Bucket([]byte(info.bucket))
+//		c := b.Cursor()
+//
+//		var unformattedList []string
+//		for k, _ := c.First(); k != nil; k, _ = c.Next() {
+//			unformattedList = append(unformattedList, fmt.Sprintf("%s\n", k))
+//		}
+//
+//		formattedList := columnize.SimpleFormat(unformattedList)
+//		// print out the column formatted list
+//		fmt.Println(formattedList)
+//
+//		return nil
+//
+//	})
+//
+//}
 
-}
-
-func listTags(info database) {
-
-	err = db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte(info.bucket))
-		c := b.Cursor()
-
-		var tags []string
-		for k, v := c.First(); k != nil; k, v = c.Next() {
-			if string(v) == info.currentDir {
-				tags = append(tags, fmt.Sprintf("%s", k))
-			}
-		}
-
-		if len(tags) > 0 {
-			fmt.Println(tags)
-		}
-
-		return nil
-
-	})
-
-}
-
-func getPathFromTag(info database) string {
-
-	var val []byte
-	// retrieve the data
-	err = db.View(func(tx *bolt.Tx) error {
-		bucket := tx.Bucket(info.bucket)
-		if bucket == nil {
-			return fmt.Errorf("bucket %q not found! ", info.bucket)
-		}
-
-		val = bucket.Get(info.key)
-		if val == nil {
-			fmt.Printf("no tag %v found\n", info.args)
-			os.Exit(1)
-		}
-		return nil
-	})
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return string(val)
-}
-
-func listAll(info database) {
-
-	err = db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte(info.bucket))
-		c := b.Cursor()
-
-		var unformattedList []string
-		for k, v := c.First(); k != nil; k, v = c.Next() {
-			unformattedList = append(unformattedList, fmt.Sprintf("%s|%s\n", k, v))
-		}
-
-		formattedList := columnize.SimpleFormat(unformattedList)
-		// print out the column formatted list
-		fmt.Println(formattedList)
-
-		return nil
-
-	})
-
-}
-
-func tagCompletion(info database) {
-
-	err = db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte(info.bucket))
-		c := b.Cursor()
-
-		var unformattedList []string
-		for k, _ := c.First(); k != nil; k, _ = c.Next() {
-			unformattedList = append(unformattedList, fmt.Sprintf("%s\n", k))
-		}
-
-		formattedList := columnize.SimpleFormat(unformattedList)
-		// print out the column formatted list
-		fmt.Println(formattedList)
-
-		return nil
-
-	})
-
-}
-
-func shell(info database) {
-
-	// setup the path to launch the shell at
-	cwd := getPathFromTag(info)
-	if cwd == "" {
-		// exit if path is nil
-		fmt.Printf("tag not found")
-		os.Exit(1)
-	}
-
-	// Set an environment variable.
-	// os.Setenv("DTAGSPID", strconv.Itoa(os.Getpid()))
-
-	fmt.Fprint(os.Stdout, cwd)
-	os.Exit(1)
-}
+//func shell(info database) {
+//
+//	// setup the path to launch the shell at
+//	cwd := getPathFromTag(info)
+//	if cwd == "" {
+//		// exit if path is nil
+//		fmt.Printf("tag not found")
+//		os.Exit(1)
+//	}
+//
+//	// Set an environment variable.
+//	// os.Setenv("DTAGSPID", strconv.Itoa(os.Getpid()))
+//
+//	fmt.Fprint(os.Stdout, cwd)
+//	os.Exit(1)
+//}

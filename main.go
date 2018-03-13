@@ -12,7 +12,7 @@ import (
 var database db.Database
 
 func main() {
-	err, database := db.Init()
+	database, err := db.Init()
 	if err != nil {
 		panic(err)
 	}

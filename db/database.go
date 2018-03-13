@@ -3,6 +3,7 @@ package db
 import (
 	"os"
 	"os/user"
+	"time"
 
 	"github.com/boltdb/bolt"
 )
@@ -14,13 +15,13 @@ type Database struct {
 	CurrentDirectory string
 }
 
-func Init() (error, Database) {
+func Init() (d *Database, err error) {
 	u, err := user.Current()
 	if err != nil {
 		panic(err)
 	}
 
-	d := Database{}
+	d = &Database{}
 	d.Datafile = u.HomeDir + "/.dtags/go/dt.db"
 	d.Bucket = []byte("dtags")
 	d.CurrentDirectory, _ = os.Getwd()
@@ -31,7 +32,7 @@ func Init() (error, Database) {
 
 	// Open the my.db data file in your current directory.
 	// It will be created if it doesn't exist.
-	d.Instance, err = bolt.Open(d.Datafile, 0600, nil)
+	d.Instance, err = bolt.Open(d.Datafile, 0600, &bolt.Options{Timeout: 1 * time.Second})
 	if err != nil {
 		panic(err)
 	}
@@ -41,7 +42,7 @@ func Init() (error, Database) {
 		return err
 	})
 
-	return err, d
+	return d, err
 }
 
 func (d *Database) AddKey(k string, v string) error {

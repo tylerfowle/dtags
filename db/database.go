@@ -1,7 +1,6 @@
 package db
 
 import (
-	"log"
 	"os"
 	"os/user"
 
@@ -18,7 +17,7 @@ type Database struct {
 func Init() (error, Database) {
 	u, err := user.Current()
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	d := Database{}
@@ -26,11 +25,15 @@ func Init() (error, Database) {
 	d.Bucket = []byte("dtags")
 	d.CurrentDirectory, _ = os.Getwd()
 
+	if err = os.MkdirAll(u.HomeDir+"/.dtags/go", 0755); err != nil {
+		panic(err)
+	}
+
 	// Open the my.db data file in your current directory.
 	// It will be created if it doesn't exist.
 	d.Instance, err = bolt.Open(d.Datafile, 0600, nil)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	err = d.Instance.Update(func(tx *bolt.Tx) error {
@@ -48,7 +51,7 @@ func (d *Database) AddKey(k string, v string) error {
 }
 
 func (d *Database) DeleteKey(k string) error {
-	return d.Instance.Update(func (tx *bolt.Tx) error {
+	return d.Instance.Update(func(tx *bolt.Tx) error {
 		return tx.Bucket(d.Bucket).Delete([]byte(k))
 	})
 }
@@ -88,3 +91,6 @@ func (d *Database) All() map[string]string {
 	return m
 }
 
+func (d *Database) Exists(k string) bool {
+	return d.GetValue(k) != ""
+}

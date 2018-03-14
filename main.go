@@ -9,6 +9,7 @@ import (
 
 	"github.com/ryanuber/columnize"
 	"github.com/tylerfowle/dtags/db"
+	"github.com/tylerfowle/dtags/install"
 )
 
 var database *db.Database
@@ -49,6 +50,14 @@ func main() {
 		break
 	case "ls":
 		printBoth()
+		break
+	case "bash-script":
+		s, err := install.BashHelper()
+		if err != nil {
+			panic(err)
+		}
+
+		fmt.Print(s)
 		break
 	default:
 		printPath(os.Args[1:])

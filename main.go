@@ -65,7 +65,7 @@ func addNewTag(args []string) {
 	}
 
 	if err := database.AddKey(k, v); err != nil {
-		fmt.Printf("failed\n")
+		fmt.Printf("Failed.\n")
 	} else {
 		fmt.Printf("Successfully added tag [%s] to path [%s]\n", k, v)
 	}

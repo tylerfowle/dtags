@@ -37,7 +37,10 @@ func main() {
 			fmt.Printf("Successfully deleted tag [%s]\n", args[0])
 		}
 		break
-	case "list", "completion":
+	case "list":
+		database.GetCurrentTags()
+		break
+	case "tags", "completion":
 		printAllTags()
 		break
 	case "ls":

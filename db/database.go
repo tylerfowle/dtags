@@ -66,6 +66,17 @@ func (d *Database) GetTags() []string {
 	return tags
 }
 
+func (d *Database) GetCurrentTags() []string {
+	var tags []string
+	for key, value := range d.All() {
+		if value == d.CurrentDirectory {
+			tags = append(tags, key)
+		}
+	}
+
+	return tags
+}
+
 func (d *Database) GetValue(k string) string {
 	var val []byte
 	_ = d.Instance.View(func(tx *bolt.Tx) error {

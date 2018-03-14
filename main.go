@@ -22,9 +22,8 @@ func main() {
 	}
 	defer database.Instance.Close()
 
-	if len(os.Args) < 2 {
+	if len(os.Args) < 2 || ((os.Args[1] == "add" || os.Args[1] == "del") && len(os.Args) < 3) {
 		showHelp()
-		os.Exit(0)
 	}
 
 	switch os.Args[1] {
@@ -41,8 +40,7 @@ func main() {
 		printBoth()
 		break
 	default:
-		args := os.Args[1:]
-		printPath(args)
+		printPath(os.Args[1:])
 	}
 }
 
@@ -50,11 +48,14 @@ func main() {
 // to the command.
 func showHelp() {
 	fmt.Println("usage: dtags command [params]")
+	fmt.Println("       dtags <tag>")
 	fmt.Println()
 	fmt.Println("       add <tag> [path] - add a new tag at path; defaults to current directory")
 	fmt.Println("       del <tag> - delete the provided tag from storage")
 	fmt.Println("       list - list all tags currently stored")
 	fmt.Println("       ls - list all tags currently stored and associated paths")
+
+	os.Exit(64)
 }
 
 func addNewTag(args []string) {

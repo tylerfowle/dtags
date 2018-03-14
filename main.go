@@ -31,7 +31,11 @@ func main() {
 		addNewTag(args)
 		break
 	case "del":
-		database.DeleteKey(strings.ToLower(args[0]))
+		if err := database.DeleteKey(strings.ToLower(args[0])); err != nil {
+			fmt.Println("Failed.")
+		} else {
+			fmt.Printf("Successfully deleted tag [%s]\n", args[0])
+		}
 		break
 	case "list", "completion":
 		printAllTags()
@@ -60,7 +64,12 @@ func addNewTag(args []string) {
 		}
 	}
 
-	database.AddKey(k, v)
+	if err := database.AddKey(k, v); err != nil {
+		fmt.Printf("failed\n")
+	} else {
+		fmt.Printf("Successfully added tag [%s] to path [%s]\n", k, v)
+	}
+
 }
 
 func printAllTags() {
@@ -82,7 +91,7 @@ func printBoth() {
 func printPath(args []string) {
 	cwd := database.GetValue(args[0])
 	if cwd == "" {
-		fmt.Printf("tag not found\n")
+		fmt.Println("")
 		os.Exit(1)
 	}
 
@@ -97,32 +106,18 @@ func confirmation() bool {
 	if err != nil {
 		log.Fatal(err)
 	}
-	y := []string{"y", "yes"}
-	n := []string{"n", "no"}
 
-	response = strings.TrimSpace(response)
-	response = strings.ToLower(response)
+	response = strings.ToLower(strings.TrimSpace(response))
 
-	if containsString(y, response) {
+	switch response {
+	case "y", "yes":
+		fmt.Printf("Overwriting tag [%s]\n", os.Args[1])
 		return true
-	} else if containsString(n, response) {
+	case "n", "no":
+		fmt.Println("Overwrite cancelled.")
 		return false
-	} else {
-		fmt.Println("yes or no required:")
+	default:
+		fmt.Println("(yes/no) required:")
 		return confirmation()
 	}
-}
-
-func posString(slice []string, element string) int {
-	for index, elem := range slice {
-		if elem == element {
-			return index
-		}
-	}
-	return -1
-}
-
-// containsString returns true iff slice contains element
-func containsString(slice []string, element string) bool {
-	return !(posString(slice, element) == -1)
 }

@@ -70,6 +70,19 @@ func (d *Database) GetTags() []string {
 	return tags
 }
 
+// Get the current tags that belong to the directory the command
+// is being run in.
+func (d *Database) GetCurrentTags() []string {
+	var tags []string
+	for key, value := range d.All() {
+		if value == d.CurrentDirectory {
+			tags = append(tags, key)
+		}
+	}
+
+	return tags
+}
+
 // Get the value of a specific tag stored in the database.
 func (d *Database) GetValue(k string) string {
 	var val []byte

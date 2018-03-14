@@ -80,7 +80,6 @@ func printBoth() {
 }
 
 func printPath(args []string) {
-
 	cwd := database.GetValue(args[0])
 	if cwd == "" {
 		fmt.Printf("tag not found\n")
@@ -89,7 +88,6 @@ func printPath(args []string) {
 
 	fmt.Fprint(os.Stdout, cwd)
 	os.Exit(1)
-
 }
 
 func confirmation() bool {
@@ -99,8 +97,8 @@ func confirmation() bool {
 	if err != nil {
 		log.Fatal(err)
 	}
-	y := []string{"y", "Y", "yes", "Yes", "YES"}
-	n := []string{"n", "N", "no", "No", "NO"}
+	y := []string{"y", "yes"}
+	n := []string{"n", "no"}
 
 	response = strings.TrimSpace(response)
 	response = strings.ToLower(response)

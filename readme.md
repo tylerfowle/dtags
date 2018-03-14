@@ -44,11 +44,12 @@ Command | Description
 
 ## Todos:
 - [x] make tags case insensitive
-- [ ] bash completion
 - [x] zsh completion
-- [ ] confirm overwrite?
+- [ ] bash completion
+- [x] confirm overwrite?
 - [ ] add install script
 - [ ] add uninstall script
 - [x] add ability to manually enter path when adding tag
 - [ ] bash helper script - make dtags path easy to change
-- [ ] add ability to add and delete multiple tags at once
+- [ ] add ability to add and delete multiple tags at once?
+- [ ] config file? alias name?, install location?, bucket name?

@@ -13,25 +13,26 @@ import (
 
 var database *db.Database
 
+// Entrypoint for dtags application. Initializes database instance and
+// processed passed command to perform the expected action.
 func main() {
 	var err error
-
-	database, err = db.Init()
-	if err != nil {
+	if database, err = db.Init(); err != nil {
 		panic(err)
 	}
-
 	defer database.Instance.Close()
 
-	cmd := os.Args[1]
-	args := os.Args[2:]
+	if len(os.Args) < 2 {
+		showHelp()
+		os.Exit(0)
+	}
 
-	switch cmd {
+	switch os.Args[1] {
 	case "add":
-		addNewTag(args)
+		addNewTag(os.Args[2:])
 		break
 	case "del":
-		database.DeleteKey(strings.ToLower(args[0]))
+		database.DeleteKey(strings.ToLower(os.Args[2:][0]))
 		break
 	case "list", "completion":
 		printAllTags()
@@ -43,6 +44,17 @@ func main() {
 		args := os.Args[1:]
 		printPath(args)
 	}
+}
+
+// Show the help message to a user when not enough arguments are passed
+// to the command.
+func showHelp() {
+	fmt.Println("usage: dtags command [params]")
+	fmt.Println()
+	fmt.Println("       add <tag> [path] - add a new tag at path; defaults to current directory")
+	fmt.Println("       del <tag> - delete the provided tag from storage")
+	fmt.Println("       list - list all tags currently stored")
+	fmt.Println("       ls - list all tags currently stored and associated paths")
 }
 
 func addNewTag(args []string) {

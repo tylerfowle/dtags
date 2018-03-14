@@ -15,6 +15,7 @@ type Database struct {
 	CurrentDirectory string
 }
 
+// Initalize the database and store the instance in the struct.
 func Init() (d *Database, err error) {
 	u, err := user.Current()
 	if err != nil {
@@ -45,18 +46,21 @@ func Init() (d *Database, err error) {
 	return d, err
 }
 
+// Add a new key to the database with a given path.
 func (d *Database) AddKey(k string, v string) error {
 	return d.Instance.Update(func(tx *bolt.Tx) error {
 		return tx.Bucket(d.Bucket).Put([]byte(k), []byte(v))
 	})
 }
 
+// Delete a key from the database.
 func (d *Database) DeleteKey(k string) error {
 	return d.Instance.Update(func(tx *bolt.Tx) error {
 		return tx.Bucket(d.Bucket).Delete([]byte(k))
 	})
 }
 
+// Get all of the tags that currently exist in the database.
 func (d *Database) GetTags() []string {
 	var tags []string
 	for key := range d.All() {
@@ -66,6 +70,7 @@ func (d *Database) GetTags() []string {
 	return tags
 }
 
+// Get the value of a specific tag stored in the database.
 func (d *Database) GetValue(k string) string {
 	var val []byte
 	_ = d.Instance.View(func(tx *bolt.Tx) error {
@@ -77,6 +82,8 @@ func (d *Database) GetValue(k string) string {
 	return string(val)
 }
 
+// Return all of the tags currently stored in the database with their
+// associated values.
 func (d *Database) All() map[string]string {
 	m := make(map[string]string)
 	_ = d.Instance.View(func(tx *bolt.Tx) error {
@@ -92,6 +99,7 @@ func (d *Database) All() map[string]string {
 	return m
 }
 
+// Check if a given key exists in the database.
 func (d *Database) Exists(k string) bool {
 	return d.GetValue(k) != ""
 }

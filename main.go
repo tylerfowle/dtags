@@ -58,6 +58,9 @@ func showHelp() {
 	os.Exit(64)
 }
 
+// Add a new tag to the database prompting user for permission if the tag
+// already exists. Uses the current working directory if no path is provided
+// as an argument when calling the command.
 func addNewTag(args []string) {
 	k := strings.ToLower(args[0])
 	v := database.CurrentDirectory
@@ -76,12 +79,16 @@ func addNewTag(args []string) {
 	database.AddKey(k, v)
 }
 
+// Print all of the tags currently stored in the database. Does not include
+// the directory that the tag belongs to.
 func printAllTags() {
 	for _, tag := range database.GetTags() {
 		fmt.Println(tag)
 	}
 }
 
+// Print all of the tags currently stored in the database along with the
+// folder path that belongs to that tag.
 func printBoth() {
 	var unformattedlist []string
 	for tag, path := range database.All() {
@@ -92,6 +99,8 @@ func printBoth() {
 	fmt.Println(formattedList)
 }
 
+// Print the path for a specific tag that is passed in. If no tag is found, an
+// empty response is returned.
 func printPath(args []string) {
 	cwd := database.GetValue(args[0])
 	if cwd == "" {
@@ -103,6 +112,8 @@ func printPath(args []string) {
 	os.Exit(1)
 }
 
+// Confirm with the user that they do wish to continue with a destructive operation
+// or would prefer to cancel and not continue.
 func confirmation() bool {
 	var response string
 

@@ -38,10 +38,14 @@ func main() {
 		}
 		break
 	case "list":
-		database.GetCurrentTags()
+		for _, v := range database.GetCurrentTags() {
+			fmt.Println(v)
+		}
 		break
 	case "tags", "completion":
-		printAllTags()
+		for _, tag := range database.GetTags() {
+			fmt.Println(tag)
+		}
 		break
 	case "ls":
 		printBoth()
@@ -59,7 +63,7 @@ func showHelp() {
 	fmt.Println()
 	fmt.Println("       add <tag> [path] - add a new tag at path; defaults to current directory")
 	fmt.Println("       del <tag> - delete the provided tag from storage")
-	fmt.Println("       list - list all tags currently stored")
+	fmt.Println("       list - list all tags on the current directory")
 	fmt.Println("       ls - list all tags currently stored and associated paths")
 
 	os.Exit(64)
@@ -89,14 +93,6 @@ func addNewTag(args []string) {
 		fmt.Printf("Successfully added tag [%s] to path [%s]\n", k, v)
 	}
 
-}
-
-// Print all of the tags currently stored in the database. Does not include
-// the directory that the tag belongs to.
-func printAllTags() {
-	for _, tag := range database.GetTags() {
-		fmt.Println(tag)
-	}
 }
 
 // Print all of the tags currently stored in the database along with the

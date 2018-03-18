@@ -7,7 +7,7 @@ import (
 )
 
 const script = `#!/usr/bin/env bash
-dtags=~/.config/dtags/dtags
+dtags=dtags
 declare -a arr=("" "add" "del" "tags" "list" "ls" "completion", "bash-script")
 found=0
 

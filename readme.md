@@ -11,25 +11,16 @@ Installation consists of 3 parts.
 2. bash helper script that is used to launch commands and `cd` to tagged directories.
 3. the guts, a go utility that does all the heavy lifting.
 
-- [go install](#go-install)
-- [github/direct download install](#github-install)
+```
+curl -L https://github.com/tylerfowle/dtags/releases/download/v0.1/dtags > /usr/bin/local/dtags
+```
 
-#### Alias:
-add the following bash alias to your bashrc/zshrc
+`dtags install`
+
+add the following bash alias to your bashrc/zshrc:
 ```
 alias dt=". ~/.config/dtags/dtags"
 ```
-
-#### Go Install:
-```
-go get tylerfowle/dtags
-```
-
-#### Github Install:
-clone or download this repo
-
-
-
 
 ## Usage
 Command | Description
@@ -37,10 +28,10 @@ Command | Description
 `<string>`         | returns a path from a tag, `cd`s you to the directory when called from bash helper script/alias
 `add`              | add tag to current _working_ directory
 `del`              | delete tag and associated path from database, dtags doesnt care were this command is ran from
-`ls`,`<no arg>`    | prints all tags and their associated directories
+`ls`               | prints all tags and their associated directories
 `list`             | lists all tags on current working directory
 `completion`       | returns a list of all tags in database.  (used for bash/zsh completion)
-
+`install`          | install dt bash helper script
 
 ## Todos:
 - [x] make tags case insensitive

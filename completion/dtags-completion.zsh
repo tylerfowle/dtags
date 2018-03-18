@@ -1,4 +1,13 @@
 #compdef dt
+#
+# zsh completion for dtags
+#
+# Recommended installation:
+#
+# copy this script to `~/.zsh/_dtags`
+# and then add the following to your ~/.zshrc file:
+#
+# fpath=(~/.zsh $fpath)
 
 _dtags_all_tags() {
   all_tags=(`~/go/src/github.com/tylerfowle/dtags/dtags completion`)

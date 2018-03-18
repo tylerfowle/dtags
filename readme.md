@@ -14,7 +14,7 @@ Installation consists of 3 parts.
 
 #### Download dtags and set permissions:
 ```
-curl -L https://github.com/tylerfowle/dtags/releases/download/v0.1/dtags -o /usr/local/bin/dtags
+curl -L https://github.com/tylerfowle/dtags/releases/download/v0.1.1/dtags -o /usr/local/bin/dtags
 sudo chmod +x /usr/local/bin/dtags
 ```
 

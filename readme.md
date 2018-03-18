@@ -12,7 +12,7 @@ Installation consists of 3 parts.
 3. the guts, a go utility that does all the heavy lifting.
 
 ```
-curl -L https://github.com/tylerfowle/dtags/releases/download/v0.1/dtags -o /usr/bin/local/dtags
+curl -L https://github.com/tylerfowle/dtags/releases/download/v0.1/dtags -o /usr/local/bin/dtags
 ```
 
 `dtags install`

@@ -8,7 +8,7 @@ import (
 
 const script = `#!/usr/bin/env bash
 dtags=dtags
-declare -a arr=("" "add" "del" "tags" "list" "ls" "completion", "bash-script")
+declare -a arr=("" "add" "del" "tags" "list" "ls" "completion", "install")
 found=0
 
 # check if arg is a single arg command in arr array

@@ -52,12 +52,10 @@ func main() {
 		printBoth()
 		break
 	case "install":
-		s, err := install.WriteFile()
+		_, err := install.WriteFile()
 		if err != nil {
-			log.Fatal("cannot install", err)
+			log.Fatal("Installation failed.", err)
 		}
-
-		fmt.Print(s)
 		break
 	default:
 		printPath(os.Args[1:])

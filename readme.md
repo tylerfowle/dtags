@@ -11,15 +11,23 @@ Installation consists of 3 parts.
 2. bash helper script that is used to launch commands and `cd` to tagged directories.
 3. the guts, a go utility that does all the heavy lifting.
 
+
+#### Download dtags and set permissions:
 ```
 curl -L https://github.com/tylerfowle/dtags/releases/download/v0.1/dtags -o /usr/local/bin/dtags
+sudo chmod +x /usr/local/bin/dtags
 ```
 
-`dtags install`
+#### Install bash helper script:
 
-add the following bash alias to your bashrc/zshrc:
 ```
-alias dt=". dtags"
+dtags install
+```
+
+#### Alias: add to your bashrc/zshrc:
+
+```
+alias dt=". ~/.config/dtags/dt"
 ```
 
 ## Usage

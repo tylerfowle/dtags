@@ -51,10 +51,10 @@ func main() {
 	case "ls":
 		printBoth()
 		break
-	case "bash-script":
-		s, err := install.BashHelper()
+	case "install":
+		s, err := install.WriteFile()
 		if err != nil {
-			panic(err)
+			log.Fatal("cannot install", err)
 		}
 
 		fmt.Print(s)

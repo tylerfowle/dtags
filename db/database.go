@@ -23,15 +23,16 @@ func Init() (d *Database, err error) {
 	}
 
 	d = &Database{}
-	d.Datafile = u.HomeDir + "/.dtags/go/dt.db"
+	d.Datafile = u.HomeDir + "/.config/dtags/dtags.db"
 	d.Bucket = []byte("dtags")
 	d.CurrentDirectory, _ = os.Getwd()
 
-	if err = os.MkdirAll(u.HomeDir+"/.dtags/go", 0755); err != nil {
+	// make all the directorys
+	if err = os.MkdirAll(u.HomeDir+"/.config/dtags", 0755); err != nil {
 		return nil, err
 	}
 
-	// Open the my.db data file in your current directory.
+	// Open the .db data file
 	// It will be created if it doesn't exist.
 	d.Instance, err = bolt.Open(d.Datafile, 0600, &bolt.Options{Timeout: 1 * time.Second})
 	if err != nil {

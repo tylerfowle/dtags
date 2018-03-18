@@ -1,13 +1,13 @@
 package install
 
 import (
+	"log"
 	"os"
-	"path/filepath"
-	"strings"
+	"os/user"
 )
 
 const script = `#!/usr/bin/env bash
-dtags={{BIN_PATH}}
+dtags=~/.config/dtags/dtags
 declare -a arr=("" "add" "del" "tags" "list" "ls" "completion", "bash-script")
 found=0
 
@@ -27,12 +27,29 @@ elif [[ ${found} -ne 1 ]]; then
     false 1
 fi`
 
-func BashHelper() (string, error) {
-	ex, err := os.Executable()
-	if err != nil {
-		return "", err
+func check(e error) {
+	if e != nil {
+		log.Fatal(e)
 	}
+}
 
-	s := strings.Replace(script, "{{BIN_PATH}}", filepath.Dir(ex), 1)
-	return s, nil
+func WriteFile() (string, error) {
+
+	// get user info
+	u, err := user.Current()
+	check(err)
+
+	file := u.HomeDir + "/.config/dtags/dt"
+
+	// create file
+	f, err := os.Create(file)
+	check(err)
+	err = os.Chmod(file, 0755)
+	check(err)
+	defer f.Close()
+
+	// write script to file
+	f.Write([]byte(script))
+
+	return script, nil
 }

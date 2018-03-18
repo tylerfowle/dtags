@@ -17,7 +17,7 @@ Installation consists of 3 parts.
 #### Alias:
 add the following bash alias to your bashrc/zshrc
 ```
-alias dt=". ~/go/src/github.com/tylerfowle/dtags/dt"
+alias dt=". ~/.config/dtags/dtags"
 ```
 
 #### Go Install:

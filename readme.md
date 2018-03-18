@@ -42,6 +42,7 @@ Command | Description
 `install`          | install dt bash helper script
 
 ## Todos:
+- [ ] add images/gifs to readme
 - [x] make tags case insensitive
 - [x] zsh completion
 - [ ] bash completion
@@ -51,4 +52,4 @@ Command | Description
 - [x] add ability to manually enter path when adding tag
 - [ ] ~~bash helper script - make dtags path easy to change~~
 - [ ] add ability to add and delete multiple tags at once?
-- [ ] ~~config file? alias name?, install location?, bucket name?~~
+- [ ] ~~config file? alias name? install location? bucket name?~~

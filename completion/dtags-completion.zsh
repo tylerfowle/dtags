@@ -10,7 +10,7 @@
 # fpath=(~/.zsh $fpath)
 
 _dtags_all_tags() {
-  all_tags=(`~/go/src/github.com/tylerfowle/dtags/dtags completion`)
+  all_tags=(`dtags completion`)
 }
 
 local -a _1st_arguments

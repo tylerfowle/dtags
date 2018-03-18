@@ -12,14 +12,14 @@ Installation consists of 3 parts.
 3. the guts, a go utility that does all the heavy lifting.
 
 ```
-curl -L https://github.com/tylerfowle/dtags/releases/download/v0.1/dtags > /usr/bin/local/dtags
+curl -L https://github.com/tylerfowle/dtags/releases/download/v0.1/dtags -o /usr/bin/local/dtags
 ```
 
 `dtags install`
 
 add the following bash alias to your bashrc/zshrc:
 ```
-alias dt=". ~/.config/dtags/dtags"
+alias dt=". dtags"
 ```
 
 ## Usage

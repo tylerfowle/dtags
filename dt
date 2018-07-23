@@ -5,15 +5,15 @@ found=0
 
 # check if arg is a single arg command in arr array
 for i in "${arr[@]}"; do
-    if [[ $i == $1 ]]; then
+    if [[ $1 == $i ]]; then
         found=1
-        ${dtags} $@
+        "$dtags" "$@"
         false 1
     fi
 done
 
 if [[ -d "$(${dtags} $1)" && ${found} -ne 1 ]]; then
-    cd "$(${dtags} $1)"
+    cd "$("$dtags" "$1")"
 elif [[ ${found} -ne 1 ]]; then
     echo "no directory found for tag [$1]"
     false 1

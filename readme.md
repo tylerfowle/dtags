@@ -14,7 +14,19 @@ Installation consists of 3 parts.
 
 #### Download dtags and set permissions:
 ```
-sudo curl -L https://github.com/tylerfowle/dtags/releases/download/v0.1.1/dtags -o /usr/local/bin/dtags
+# Clone the repo
+git clone https://github.com/tylerfowle/dtags
+cd dtags
+
+# Build both slices
+GOARCH=arm64 GOOS=darwin go build -o dtags-arm64 main.go
+GOARCH=amd64 GOOS=darwin go build -o dtags-amd64 main.go
+
+# Combine into a universal binary
+lipo -create -output dtags dtags-arm64 dtags-amd64
+
+# Install & set permissions
+sudo mv dtags /usr/local/bin/dtags
 sudo chmod +x /usr/local/bin/dtags
 ```
 
